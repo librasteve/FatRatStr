@@ -12,6 +12,4 @@ ok $from-numstr == $expect, 'NumStr.FatRatStr';
 my FatRatStr $from-literal = '1.6605402e-27'.FatRatStr;
 ok $from-literal == $expect, 'Str.FatRatStr';
 
-dd $from-numstr;
-
 done-testing;
