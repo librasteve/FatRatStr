@@ -1,6 +1,17 @@
 use Test;
 use FatRatStr;
 
-pass "replace me";
+my $expect = FatRat.new(16605402, 10**34);
+
+my NumStr $numstr = <1.6605402e-27>;
+my FatRatStr $from-numstr = $numstr.FatRatStr;
+
+ok $from-numstr ~~ FatRatStr, 'FatRatStr';
+ok $from-numstr == $expect, 'NumStr.FatRatStr';
+
+my FatRatStr $from-literal = '1.6605402e-27'.FatRatStr;
+ok $from-literal == $expect, 'Str.FatRatStr';
+
+dd $from-numstr;
 
 done-testing;

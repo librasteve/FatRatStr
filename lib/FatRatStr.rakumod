@@ -1,32 +1,58 @@
-unit class FatRatStr;
+grammar DecimalExponent {
+    token TOP         { ^ <exponential> $ }
+    token exponential { <sign>? <whole> [ '.' <decimal>+ ]? <[eE]> <exponent>? }
 
+    token whole       { <digs>+ }
+    token decimal     { <digs>+ }
+    token exponent    { <sign>? <digs>+ }
 
-=begin pod
+    token sign        { <[+-]> }
+    token digs        { <[0..9]> }
+}
 
-=head1 NAME
+class DecimalActions {
+    method TOP($/) {
+        make $<exponential>.made;
+    }
 
-FatRatStr - blah blah blah
+    method exponential($/) {
+        my $sign = 1;
+        with $<sign> {
+            if .Str eq '-' { $sign = -1 }
+        }
 
-=head1 SYNOPSIS
+        my $whole    = $<whole>.Str;
+        my $decimal  = $<decimal>.Str;
+        my $exponent = $<exponent>.Str;
 
-=begin code :lang<raku>
+        my $adjust   = $decimal.chars;
+        my $shift    = $adjust - $exponent;
 
-use FatRatStr;
+        my $numerator   = $sign * ( ( $whole * 10**$adjust ) + $decimal);
+        my $denominator = 10**$shift;
 
-=end code
+        make FatRat.new($numerator, $denominator);
+    }
+}
 
-=head1 DESCRIPTION
+class FatRatStr {
+#class FatRatStr is Allomorph is FatRat {    #tbd
+    has FatRat $!fatrat is built handles <nude FatRat Numeric>;
+    has Str    $!str    is built handles <Str>;
+}
 
-FatRatStr is ...
+use MONKEY-TYPING;
 
-=head1 AUTHOR
+augment class NumStr {
+    method FatRatStr(NumStr:D: --> FatRatStr:D) {
+        my $m = DecimalExponent.parse(self.Str, :actions(DecimalActions));
+        FatRatStr.new(fatrat => $m.made, str => self.Str);
+    }
+}
 
-librasteve <librasteve@furnival.net>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2025 librasteve
-
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
-=end pod
+augment class Str {
+    method FatRatStr(Str:D: --> FatRatStr:D) {
+        my $m = DecimalExponent.parse(self, :actions(DecimalActions));
+        FatRatStr.new(fatrat => $m.made, str => self);
+    }
+}
