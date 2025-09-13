@@ -1,12 +1,10 @@
-### Name
+# FatRatStr
 
-FatRatStr
-
-### Description
+## Description
 
 FatRat Allomorph to parse NumStr string to FatRat avoiding Num clipping
 
-### Synopsis
+## Synopsis
 
 
 
