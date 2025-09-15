@@ -1,3 +1,5 @@
+#use Grammar::Tracer;
+
 grammar DecimalExponent {
     token TOP         { ^ <exponential> $ }
     token exponential { <sign>? <whole> [ '.' <decimal>+ ]? <[eE]> <exponent>? }
@@ -16,22 +18,26 @@ class DecimalActions {
     }
 
     method exponential($/) {
-        my $sign = 1;
+        my Int() $sign = 1;
         with $<sign> {
             if .Str eq '-' { $sign = -1 }
         }
 
-        my $whole    = $<whole>.Str;
-        my $decimal  = $<decimal>.Str;
-        my $exponent = $<exponent>.Str;
+        my Int() $whole    = $<whole>.Str;
+        my Int() $decimal  = $<decimal>.Str;
+        my Int() $adjust   = $<decimal>.Str.chars;
+        my Int() $exponent = $<exponent>.Str;
 
-        my $adjust   = $decimal.chars;
-        my $shift    = $adjust - $exponent;
+        my $shift = $adjust - $exponent;
+        my $left = $shift >=0 ?? True !! False;
 
-        my $numerator   = $sign * ( ( $whole * 10**$adjust ) + $decimal);
-        my $denominator = 10**$shift;
+        my $adjusted = $sign * ( ( $whole * 10**$adjust ) + $decimal);
 
-        make FatRat.new($numerator, $denominator);
+        if $left {
+            make FatRat.new($adjusted, 10**$shift);
+        } else {
+            make FatRat.new($adjusted * 10**-$shift, 1);
+        }
     }
 }
 

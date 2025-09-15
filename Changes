@@ -2,5 +2,8 @@ Revision history for FatRatStr
 
 {{$NEXT}}
 
+0.0.3  2025-09-15T12:34:33+01:00
+    - Denormalised values ok
+
 0.0.2  2025-09-13T18:40:09+01:00
     - Initial version

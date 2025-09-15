@@ -10,7 +10,6 @@
   "description": "blah blah blah",
   "license": "Artistic-2.0",
   "name": "FatRatStr",
-  "perl": "6.d",
   "provides": {
     "FatRatStr": "lib/FatRatStr.rakumod"
   },
@@ -21,5 +20,5 @@
   ],
   "test-depends": [
   ],
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
