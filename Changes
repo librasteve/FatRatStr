@@ -2,6 +2,9 @@ Revision history for FatRatStr
 
 {{$NEXT}}
 
+0.0.4  2025-09-15T12:53:18+01:00
+    - delegate abs to FatRat
+
 0.0.3  2025-09-15T12:34:33+01:00
     - Denormalised values ok
 
