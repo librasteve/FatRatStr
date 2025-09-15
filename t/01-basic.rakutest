@@ -2,7 +2,7 @@ use Test;
 use FatRatStr;
 
 my @tests =
-    <1.66e-10 1e1 1e0 0.01e-2 0.1e-2 0e-2 0e100 1e1 1e2 10e2 100e-3>;
+    <1.66e-10 -1.66e-10 1e1 1e0 0.01e-2 0.1e-2 0e-2 0e100 1e1 1e2 10e2 100e-3>;
 
 for @tests -> $test {
     ok $test.FatRatStr == $test, ~$test;

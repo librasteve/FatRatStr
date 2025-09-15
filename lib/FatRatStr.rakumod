@@ -4,12 +4,11 @@ grammar DecimalExponent {
     token TOP         { ^ <exponential> $ }
     token exponential { <sign>? <whole> [ '.' <decimal>+ ]? <[eE]> <exponent>? }
 
-    token whole       { <digs>+ }
-    token decimal     { <digs>+ }
-    token exponent    { <sign>? <digs>+ }
+    token whole       { \d+ }
+    token decimal     { \d+ }
+    token exponent    { <[+-]>? \d+ }
 
     token sign        { <[+-]> }
-    token digs        { <[0..9]> }
 }
 
 class DecimalActions {

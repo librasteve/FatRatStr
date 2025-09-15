@@ -2,6 +2,9 @@ Revision history for FatRatStr
 
 {{$NEXT}}
 
+0.0.5  2025-09-15T14:34:31+01:00
+    - tweak digit & sign match
+
 0.0.4  2025-09-15T12:53:18+01:00
     - delegate abs to FatRat
 
