@@ -2,6 +2,9 @@ Revision history for FatRatStr
 
 {{$NEXT}}
 
+0.0.7  2026-02-27T17:54:53Z
+    - direct coercion to Int, Num, Complex
+
 0.0.6  2026-02-27T17:34:42Z
     - add description
 

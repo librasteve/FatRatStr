@@ -42,7 +42,7 @@ class DecimalActions {
 
 class FatRatStr {
 #class FatRatStr is Allomorph is FatRat {    #tbd
-    has FatRat $!fatrat is built handles <nude FatRat Numeric abs>;
+    has FatRat $!fatrat is built handles <nude FatRat Numeric abs Num Int Complex>;
     has Str    $!str    is built handles <Str>;
 }
 
