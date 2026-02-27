@@ -1,15 +1,24 @@
 {
-    "name": "FatRatStr",
-    "description": "FatRat Allomorph to parse NumStr string to FatRat avoiding Num clipping",
-    "version": "0.0.5",
-    "authors": [
-        "librasteve"
-    ],
-    "auth": "zef:librasteve",
-    "build-depends": [],
-    "provides": {
-        "FatRatStr": "lib/FatRatStr.rakumod"
-    },
-    "license": "Artistic-2.0",
-    "source-url": "https://github.com/librasteve/FatRatStr.git"
+  "auth": "zef:librasteve",
+  "authors": [
+    "librasteve"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "FatRat Allomorph to parse NumStr string to FatRat avoiding Num clipping",
+  "license": "Artistic-2.0",
+  "name": "FatRatStr",
+  "provides": {
+    "FatRatStr": "lib/FatRatStr.rakumod"
+  },
+  "resources": [
+  ],
+  "source-url": "https://github.com/librasteve/FatRatStr.git",
+  "tags": [
+  ],
+  "test-depends": [
+  ],
+  "version": "0.0.6"
 }
