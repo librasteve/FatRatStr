@@ -1,0 +1,22 @@
+use Test;
+use FatRatStr;
+
+my @tests =
+    <1.66e-10 -1.66e-10 1e1 1e0 0.01e-2 0.1e-2 0e-2 0e100 1e1 1e2 10e2 100e-3>;
+
+for @tests -> $test {
+    ok $test.FatRat == $test, ~$test;
+}
+
+my $expect = FatRat.new(16605402, 10**34);
+
+my NumStr $numstr = <1.6605402e-27>;
+my FatRat $from-numstr = $numstr.FatRat;
+
+ok $from-numstr ~~ FatRat, 'FatRat';
+ok $from-numstr == $expect, 'NumStr.FatRat';
+
+my FatRat $from-literal = '1.6605402e-27'.FatRat;
+ok $from-literal == $expect, 'Str.FatRat';
+
+done-testing;
