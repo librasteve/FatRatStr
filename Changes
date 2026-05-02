@@ -1,6 +1,7 @@
 Revision history for FatRatStr
 
 {{$NEXT}}
+    - add .FatRat augmentation
 
 0.0.7  2026-02-27T17:54:53Z
     - direct coercion to Int, Num, Complex

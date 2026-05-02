@@ -2,12 +2,11 @@
 
 ## Description
 
-FatRat Allomorph to parse NumStr string to FatRat avoiding Num clipping
+FatRat Allomorph to parse NumStr or Str string to FatRat avoiding Num clipping. Provides the `.FatRatStr` coercion method.
 
 ## Synopsis
 
 ```raku
-
 <1.6605402e-27>.FatRatStr;
 #-or-
 '1.6605402e-27'.FatRatStr;
@@ -18,5 +17,18 @@ FatRat Allomorph to parse NumStr string to FatRat avoiding Num clipping
 #)
 ```
 
-Copyright 2025 Henley Cloud Consulting Ltd. 
+Also, to streamline the pattern `my $x = '1e-6'.FatRatStr.FatRat;` (to get an actual FatRat), overrides the standard `.FatRat` method of NumStr and Str. 
+
+```raku
+<1.6605402e-27>.FatRat;
+#-or-
+'1.6605402e-27'.FatRat;
+
+#.FatRat @0
+#├ $.numerator = 8302701   
+#└ $.denominator = 5000000000000000000000000000000000
+```
+
+Copyright 2025 Henley Cloud Consulting Ltd.
+Copyright 2026 Stephen Roe
 
