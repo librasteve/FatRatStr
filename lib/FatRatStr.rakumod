@@ -81,23 +81,29 @@ use MONKEY-TYPING;
 
 augment class NumStr {
     method FatRatStr(NumStr:D: --> FatRatStr:D) {
-        my $s = self.Str.subst(/'_'/, '', :g);
+        my $s = self;
+        nextsame unless +"$s" ~~ Num;
+        $s .= subst(/'_'/, '', :g);
         my $m = DecimalExponent.parse($s, :actions(DecimalActions));
         FatRatStr.new(fatrat => $m.made, str => self.Str);
     }
 }
 
 augment class NumStr {
-    multi method FatRat(Str:D: --> FatRat:D) {
-        my $s = self.Str.subst(/'_'/, '', :g);
+    multi method FatRat(NumStr:D: --> FatRat:D) {
+        my $s = self;
+        nextsame unless +"$s" ~~ Num;
+        $s .= subst(/'_'/, '', :g);
         my $m = DecimalExponent.parse($s, :actions(DecimalActions));
-        FatRatStr.new(fatrat => $m.made, str => self).FatRat;
+        $m.made.FatRat;
     }
 }
 
 augment class Str {
     method FatRatStr(Str:D: --> FatRatStr:D) {
-        my $s = self.Str.subst(/'_'/, '', :g);
+        my $s = self;
+        nextsame unless +"$s" ~~ Num;
+        $s .= subst(/'_'/, '', :g);
         my $m = DecimalExponent.parse($s, :actions(DecimalActions));
         FatRatStr.new(fatrat => $m.made, str => self);
     }
@@ -105,8 +111,10 @@ augment class Str {
 
 augment class Str {
     multi method FatRat(Str:D: --> FatRat:D) {
-        my $s = self.Str.subst(/'_'/, '', :g);
+        my $s = self;
+        nextsame unless +"$s" ~~ Num;
+        $s .= subst(/'_'/, '', :g);
         my $m = DecimalExponent.parse($s, :actions(DecimalActions));
-        FatRatStr.new(fatrat => $m.made, str => self).FatRat;
+        $m.made.FatRat;
     }
 }

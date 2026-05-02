@@ -19,4 +19,7 @@ ok $from-numstr == $expect, 'NumStr.FatRat';
 my FatRat $from-literal = '1.6605402e-27'.FatRat;
 ok $from-literal == $expect, 'Str.FatRat';
 
+my Str $i = '42';
+lives-ok  {$i.FatRat} , 'Int.FatRat';
+
 done-testing;
