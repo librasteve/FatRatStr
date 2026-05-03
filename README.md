@@ -4,6 +4,8 @@
 
 FatRat Allomorph to parse NumStr or Str string to FatRat avoiding Num clipping. Provides the `.FatRatStr` coercion method.
 
+The `str` attr contains the original literal. The Num literal is parsed and loaded into the `fatrat` attr.
+
 ## Synopsis
 
 ```raku

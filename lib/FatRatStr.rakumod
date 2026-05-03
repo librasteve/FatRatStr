@@ -1,6 +1,6 @@
 #use Grammar::Tracer;
 
-grammar DecimalExponent {
+grammar NumLiteral {
     token TOP         { ^ <exponential> $ }
     token exponential { <sign>? <whole> [ '.' <decimal>+ ]? <[eE]> <exponent>? }
 
@@ -11,7 +11,7 @@ grammar DecimalExponent {
     token sign        { <[+-]> }
 }
 
-class DecimalActions {
+class NumLiteralActions {
     method TOP($/) {
         make $<exponential>.made;
     }
@@ -41,10 +41,10 @@ class DecimalActions {
 }
 
 class FatRatStr {
-#class FatRatStr is Allomorph is FatRat {    #tbd
     has FatRat $!fatrat is built handles <nude FatRat Numeric abs Num Int Complex>;
     has Str    $!str    is built;
 
+    #| output Str in Num literal format (unlimited precision)
     method Str {
         my $s = $!str;
         my $sign = '';
@@ -84,7 +84,7 @@ augment class NumStr {
         my $s = self;
         nextsame unless +"$s" ~~ Num;
         $s .= subst(/'_'/, '', :g);
-        my $m = DecimalExponent.parse($s, :actions(DecimalActions));
+        my $m = NumLiteral.parse($s, :actions(NumLiteralActions));
         FatRatStr.new(fatrat => $m.made, str => self.Str);
     }
 }
@@ -94,7 +94,7 @@ augment class NumStr {
         my $s = self;
         nextsame unless +"$s" ~~ Num;
         $s .= subst(/'_'/, '', :g);
-        my $m = DecimalExponent.parse($s, :actions(DecimalActions));
+        my $m = NumLiteral.parse($s, :actions(NumLiteralActions));
         $m.made.FatRat;
     }
 }
@@ -104,7 +104,7 @@ augment class Str {
         my $s = self;
         nextsame unless +"$s" ~~ Num;
         $s .= subst(/'_'/, '', :g);
-        my $m = DecimalExponent.parse($s, :actions(DecimalActions));
+        my $m = NumLiteral.parse($s, :actions(NumLiteralActions));
         FatRatStr.new(fatrat => $m.made, str => self);
     }
 }
@@ -114,7 +114,14 @@ augment class Str {
         my $s = self;
         nextsame unless +"$s" ~~ Num;
         $s .= subst(/'_'/, '', :g);
-        my $m = DecimalExponent.parse($s, :actions(DecimalActions));
+        my $m = NumLiteral.parse($s, :actions(NumLiteralActions));
         $m.made.FatRat;
     }
 }
+
+augment class FatRat {
+    method FatRatStr(FatRat:D: --> FatRatStr:D) {
+        FatRatStr.new(fatrat => self, str => Str);
+    }
+}
+
