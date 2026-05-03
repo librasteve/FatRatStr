@@ -1,0 +1,54 @@
+use Test;
+use FatRatStr;
+
+my @rats =
+    FatRat.new(1, 1),
+    FatRat.new(-1, 1),
+    FatRat.new(10, 1),
+    FatRat.new(1, 10),
+    FatRat.new(1, 1000),
+    FatRat.new(1000, 1),
+    FatRat.new(0, 5),
+    FatRat.new(5, 2),
+    FatRat.new(1, 3),
+    FatRat.new(22, 7),
+    FatRat.new(16605402, 10**34);
+
+for @rats -> $r {
+    my $s = FatRatStr.make-str($r);
+
+    ok $s ~~ Str, "returns Str for {$r.nude.join('/')}";
+    is $s.FatRat.round(10-6), $r.round(10-6), "approx matches $r.nude.join('/')";
+}
+
+# specific known value
+my $expect = FatRat.new(16605402, 10**34);
+my $s = FatRatStr.make-str($expect);
+
+ok $s.FatRat == $expect, 'make-str precise value';
+
+# sign handling
+is FatRatStr.make-str(FatRat.new(-1, 1)).substr(0,1), '-', 'negative numerator';
+is FatRatStr.make-str(FatRat.new(1, -1)).substr(0,1), '-', 'negative denominator';
+
+# zero handling
+is FatRatStr.make-str(FatRat.new(0, 5)), '0e+00', 'zero numerator';
+
+# normalization check
+for @rats -> $r {
+    my $s = FatRatStr.make-str($r);
+    next if $s eq '0e+00';
+
+    like $s,
+        /^ <[+-]>? \d ['.' \d*]? 'e' <[+-]> \d\d+ $/,
+        "normalized form: $s";
+}
+
+# roundtrip consistency
+my $lit = '1.6605402e-27';
+my $fat = $lit.FatRat;
+my $gen = FatRatStr.make-str($fat);
+
+ok $gen.FatRat == $fat, 'roundtrip consistency';
+
+done-testing;

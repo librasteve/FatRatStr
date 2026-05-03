@@ -44,37 +44,75 @@ class FatRatStr {
     has FatRat $!fatrat is built handles <nude FatRat Numeric abs Num Int Complex>;
     has Str    $!str    is built;
 
-    #| output Str in Num literal format (unlimited precision)
-    method Str {
-        my $s = $!str;
-        my $sign = '';
-        if $s ~~ /^ <[+-]> / { $sign = $s.substr(0, 1); $s = $s.substr(1) }
+    method TWEAK {
+        $!str = FatRatStr.make-str($!fatrat) without $!str;
+    }
 
-        my ($mantissa, $epart) = $s.split(/<[eE]>/, 2);
-        my $exp = ($epart // '0').Int;
+    #| make str from fatrat
+    multi method make-str(FatRatStr:D:) {
+        FatRatStr.make-str($!fatrat);
+    }
 
-        my ($whole, $frac) = $mantissa.contains('.')
-            ?? $mantissa.split('.', 2)
-            !! ($mantissa, '');
+    multi method make-str(FatRatStr:U: $fatrat) {
+        my ($num, $den) = $fatrat.nude;
 
-        my $digits  = $whole ~ $frac;
-        my $dec-pos = $whole.chars;
+        die "Division by zero" if $den == 0;
 
-        # find first significant (non-zero) digit position
-        my $i = 0;
-        $i++ while $i < $digits.chars && $digits.substr($i, 1) eq '0';
+        my $sign = ($num < 0) ^ ($den < 0) ?? '-' !! '';
+        my $n = $num.abs;
+        my $d = $den.abs;
 
-        return "{$sign}0e+00" if $i == $digits.chars;
+        return "{$sign}0e+00" if $n == 0;
 
-        my $norm-exp = ($dec-pos - 1) - $i + $exp;
-        my $sig      = $digits.substr($i);
-        my $m        = $sig.substr(0, 1) ~ ($sig.chars > 1 ?? '.' ~ $sig.substr(1) !! '');
-        my $e        = $norm-exp >= 0
-                           ?? '+' ~ $norm-exp.fmt('%02d')
-                           !! '-' ~ $norm-exp.abs.fmt('%02d');
+        # Normalize so that 1 <= n/d < 10
+        my $exp = 0;
+        while $n >= $d * 10 {
+            $d *= 10;
+            $exp++;
+        }
+        while $n < $d {
+            $n *= 10;
+            $exp--;
+        }
+
+        my @digits;
+        my %seen;          # remainder → position
+        my $remainder = $n;
+
+        while $remainder != 0 && ! (%seen{$remainder}:exists) {
+            %seen{$remainder} = @digits.elems;
+
+            my $digit = 0;
+            while $remainder >= $d {
+                $remainder -= $d;
+                $digit++;
+            }
+
+            @digits.push($digit);
+            $remainder *= 10;
+        }
+
+        # Build mantissa
+        my $m;
+        if @digits.elems == 0 {
+            $m = '0';
+        } else {
+            $m = @digits[0].Str ~ (
+            @digits.elems > 1
+                ?? '.' ~ @digits[1..*].join
+                !! ''
+            );
+        }
+
+        # Format exponent
+        my $e = $exp >= 0
+            ?? '+' ~ $exp.fmt('%02d')
+            !! '-' ~ $exp.abs.fmt('%02d');
 
         $sign ~ $m ~ 'e' ~ $e
     }
+
+    method Str { $!str }
 }
 
 use MONKEY-TYPING;
@@ -87,9 +125,7 @@ augment class NumStr {
         my $m = NumLiteral.parse($s, :actions(NumLiteralActions));
         FatRatStr.new(fatrat => $m.made, str => self.Str);
     }
-}
 
-augment class NumStr {
     multi method FatRat(NumStr:D: --> FatRat:D) {
         my $s = self;
         nextsame unless +"$s" ~~ Num;
@@ -107,9 +143,7 @@ augment class Str {
         my $m = NumLiteral.parse($s, :actions(NumLiteralActions));
         FatRatStr.new(fatrat => $m.made, str => self);
     }
-}
 
-augment class Str {
     multi method FatRat(Str:D: --> FatRat:D) {
         my $s = self;
         nextsame unless +"$s" ~~ Num;
@@ -122,6 +156,10 @@ augment class Str {
 augment class FatRat {
     method FatRatStr(FatRat:D: --> FatRatStr:D) {
         FatRatStr.new(fatrat => self, str => Str);
+    }
+
+    multi method make-str(FatRat:D: --> Str:D) {
+        FatRatStr.make-str(self);
     }
 }
 
