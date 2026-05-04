@@ -2,6 +2,9 @@ Revision history for FatRatStr
 
 {{$NEXT}}
 
+0.0.11  2026-05-04T09:10:08+01:00
+    - .round ok
+
 0.0.10  2026-05-03T15:46:31+01:00
     - Stringify ok
 
