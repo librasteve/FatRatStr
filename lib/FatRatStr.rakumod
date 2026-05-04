@@ -41,7 +41,7 @@ class NumLiteralActions {
 }
 
 class FatRatStr {
-    has FatRat $.fatrat is built handles <nude FatRat Numeric abs Num Int Complex>;
+    has FatRat $.fatrat is built handles <nude FatRat Numeric abs Num Int Complex Real>;
     has Str    $.str    is built;
 
     method TWEAK {
@@ -105,12 +105,7 @@ class FatRatStr {
             );
         }
 
-        # Format exponent
-        my $e = $exp >= 0
-            ?? '+' ~ $exp.fmt('%02d')
-            !! '-' ~ $exp.abs.fmt('%02d');
-
-        $sign ~ $m ~ 'e' ~ $e
+        $sign ~ $m ~ 'e' ~ $exp
     }
 
     #| round fatrat
