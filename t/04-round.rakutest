@@ -1,0 +1,11 @@
+use Test;
+use FatRatStr;
+
+my $Em1 = <9.109_383_701_51111111111e-31>.FatRatStr;
+
+is $Em1.round(1e-31), '9e-31',              'round(1e-31)';
+is $Em1.round(1e-40), '9.109383702e-31',    'round(1e-40)';
+is $Em1.round(0.01),  '0e+00',              'round(0.01)';
+
+
+done-testing;

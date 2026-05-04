@@ -41,19 +41,20 @@ class NumLiteralActions {
 }
 
 class FatRatStr {
-    has FatRat $!fatrat is built handles <nude FatRat Numeric abs Num Int Complex>;
-    has Str    $!str    is built;
+    has FatRat $.fatrat is built handles <nude FatRat Numeric abs Num Int Complex>;
+    has Str    $.str    is built;
 
     method TWEAK {
         $!str = FatRatStr.make-str($!fatrat) without $!str;
     }
 
+    method Str { $!str }
+
     #| make str from fatrat
-    multi method make-str(FatRatStr:D:) {
+    multi method make-str(FatRatStr:D: --> Str) {
         FatRatStr.make-str($!fatrat);
     }
-
-    multi method make-str(FatRatStr:U: $fatrat) {
+    multi method make-str(FatRatStr:U: $fatrat --> Str) {
         my ($num, $den) = $fatrat.nude;
 
         die "Division by zero" if $den == 0;
@@ -112,7 +113,32 @@ class FatRatStr {
         $sign ~ $m ~ 'e' ~ $e
     }
 
-    method Str { $!str }
+    #| round fatrat
+    multi method round(FatRatStr:D: Real $scale --> FatRatStr) {
+        FatRatStr.round($!fatrat, $scale);
+    }
+    multi method round(FatRatStr:U: FatRat $fatrat, Real $scale=1 --> FatRatStr() ) {
+
+        my $s =  $scale ~~ Num
+              ?? $scale.Str.FatRatStr         # avoid 1e-31.FatRat == 0
+              !! $scale.FatRat.FatRatStr;     # avoid 0.01.Num eq '0.01'
+
+        die "round: scale cannot be zero" if $s == 0;
+
+        # divide by scale → round → multiply back
+        my $q = $fatrat / $s;
+
+        # work in rational space
+        my ($n, $d) = $q.nude;
+
+        # integer rounding: n/d → nearest integer
+        my $rounded =
+            ($n >= 0)
+            ?? ($n + $d div 2) div $d
+            !! ($n - $d div 2) div $d;
+
+        FatRat.new($rounded, 1) * $s
+    }
 }
 
 use MONKEY-TYPING;

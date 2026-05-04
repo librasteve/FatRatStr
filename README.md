@@ -50,7 +50,9 @@ say ~($y *= 2).FatRatStr;
 #1.8218767403e+310
 ```
 
-The class method `FatRatStr.make-str(FatRat:D $f) {}` is provided as a utility to do the (unlimited precision) string output.
+The method `.round(FatRatStr:D: Real $scale --> FatRatStr) {}` is provided as a utility to do (unlimited precision) rounding.
+
+The class method `FatRatStr.make-str(FatRat:D $f --> Str) {}` is provided as a utility to make the (unlimited precision) string representation.
 
 Copyright 2025 Henley Cloud Consulting Ltd.
 Copyright 2026 Stephen Roe
