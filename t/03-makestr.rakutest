@@ -32,7 +32,7 @@ is FatRatStr.make-str(FatRat.new(-1, 1)).substr(0,1), '-', 'negative numerator';
 is FatRatStr.make-str(FatRat.new(1, -1)).substr(0,1), '-', 'negative denominator';
 
 # zero handling
-is FatRatStr.make-str(FatRat.new(0, 5)), '0e+00', 'zero numerator';
+is FatRatStr.make-str(FatRat.new(0, 5)), '0', 'zero numerator';
 
 # normalization check
 for @rats -> $r {
@@ -41,7 +41,7 @@ for @rats -> $r {
 
     like $s,
         /^ <[+-]>? \d ['.' \d*]? 'e' <[+-]>* \d+ $/,
-        "normalized form: $s";
+        "normalized form: $s" unless $s == 0;
 }
 
 # roundtrip consistency

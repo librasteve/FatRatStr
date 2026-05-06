@@ -41,8 +41,8 @@ class NumLiteralActions {
 }
 
 class FatRatStr {
-    has FatRat $.fatrat is built handles <nude FatRat Numeric abs Num Int Complex Real>;
-    has Str    $.str    is built;
+    has FatRat $.fatrat handles <nude FatRat Numeric abs Num Int Complex Real>;
+    has Str    $.str;
 
     method TWEAK {
         $!str = FatRatStr.make-str($!fatrat) without $!str;
@@ -63,7 +63,7 @@ class FatRatStr {
         my $n = $num.abs;
         my $d = $den.abs;
 
-        return "{$sign}0e+00" if $n == 0;
+        return '0' if $n == 0;
 
         # Normalize so that 1 <= n/d < 10
         my $exp = 0;
@@ -109,10 +109,10 @@ class FatRatStr {
     }
 
     #| round fatrat
-    multi method round(FatRatStr:D: Real $scale --> FatRatStr) {
+    multi method round(FatRatStr:D: Real() $scale --> FatRatStr) {
         FatRatStr.round($!fatrat, $scale);
     }
-    multi method round(FatRatStr:U: FatRat $fatrat, Real $scale=1 --> FatRatStr() ) {
+    multi method round(FatRatStr:U: FatRat $fatrat, Real() $scale=1 --> FatRatStr() ) {
 
         my $s =  $scale ~~ Num
               ?? $scale.Str.FatRatStr         # avoid 1e-31.FatRat == 0
@@ -144,7 +144,7 @@ augment class NumStr {
         nextsame unless +"$s" ~~ Num;
         $s .= subst(/'_'/, '', :g);
         my $m = NumLiteral.parse($s, :actions(NumLiteralActions));
-        FatRatStr.new(fatrat => $m.made, str => self.Str);
+        FatRatStr.new(fatrat => $m.made, str => ~self);
     }
 
     multi method FatRat(NumStr:D: --> FatRat:D) {
@@ -162,7 +162,7 @@ augment class Str {
         nextsame unless +"$s" ~~ Num;
         $s .= subst(/'_'/, '', :g);
         my $m = NumLiteral.parse($s, :actions(NumLiteralActions));
-        FatRatStr.new(fatrat => $m.made, str => self);
+        FatRatStr.new(fatrat => $m.made, str => ~self);
     }
 
     multi method FatRat(Str:D: --> FatRat:D) {
