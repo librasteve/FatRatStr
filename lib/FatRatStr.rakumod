@@ -184,3 +184,21 @@ augment class FatRat {
     }
 }
 
+augment class Num {
+    method FatRatStr(Num:D: --> FatRatStr:D) {
+        self.Str.FatRatStr //       # need if over/under-flow
+        self.FatRat.FatRatStr;      # need if degenerate (e.g. 1250e0)
+    }
+}
+
+augment class Rat {
+    method FatRatStr(Rat:D: --> FatRatStr:D) {
+        self.FatRat.FatRatStr;
+    }
+}
+
+augment class Int {
+    method FatRatStr(Int:D: --> FatRatStr:D) {
+        self.FatRat.FatRatStr;
+    }
+}
