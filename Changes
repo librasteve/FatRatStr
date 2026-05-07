@@ -2,6 +2,9 @@ Revision history for FatRatStr
 
 {{$NEXT}}
 
+0.0.13  2026-05-07T07:57:06+01:00
+    - augment other Reals
+
 0.0.12  2026-05-04T12:22:47+01:00
     - drop exp fmt %02d
 
