@@ -1,6 +1,8 @@
 Revision history for FatRatStr
 
 {{$NEXT}}
+
+0.0.14  2026-05-08T17:05:52+01:00
     - .unpack
 
 0.0.13  2026-05-07T07:57:06+01:00
