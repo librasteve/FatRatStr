@@ -134,6 +134,23 @@ class FatRatStr {
 
         FatRat.new($rounded, 1) * $s
     }
+
+    #| get sign, mantissa, exponent, integer, fraction as Str s
+    method unpack(FatRatStr:D:) {
+        self ~~ / (<[-+]>?) (<-[eE]>*) <[eE]>? (.*) /;
+
+        my %h;
+        %h<sign>     = $0 // '';
+        %h<mantissa> = $1;
+        %h<exponent> = +$2;
+
+        # get either side of decimal point
+        %h<mantissa> ~~ / (<-[.]>*) '.'? (.*) /;
+        %h<integer>  = ~$0;
+        %h<fraction> = ~$1;
+
+        %h
+    }
 }
 
 use MONKEY-TYPING;
